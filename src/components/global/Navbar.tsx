@@ -20,7 +20,7 @@ import Searchbox from "./Searchbox";
 
 const Navbar = () => {
   return (
-    <div className="w-full bg-purple text-white text-opacity-60 h-[62px] p-3 flex items-center gap-2">
+    <div className="w-full bg-purple text-white text-opacity-60 h-[62px] py-3 px-6 flex items-center gap-2">
       <div className="flex gap-2 pointer-events-none">
         <MdOutlineHealthAndSafety className="text-3xl text-white" />
         <span className="font-semibold text-xl text-white">Medicare</span>
