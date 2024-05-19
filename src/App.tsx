@@ -9,7 +9,7 @@ const App = () => {
 
       <div className="flex flex-grow">
         <Sidebar />
-        <main>
+        <main className="p-3">
           <Outlet />
         </main>
       </div>
