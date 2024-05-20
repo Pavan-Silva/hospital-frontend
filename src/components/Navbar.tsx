@@ -9,13 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "./ui/dropdown-menu";
 import { DropdownMenuGroup } from "@radix-ui/react-dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { IoPersonOutline } from "react-icons/io5";
 import { GoSignOut } from "react-icons/go";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
 import Searchbox from "./Searchbox";
 
 const Navbar = () => {

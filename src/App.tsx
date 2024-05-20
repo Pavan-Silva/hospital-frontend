@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
-import Sidebar from "./components/global/Sidebar";
-import Navbar from "./components/global/Navbar";
+import Sidebar from "./components/Sidebar";
+import Navbar from "./components/Navbar";
 
 const App = () => {
   return (
@@ -9,7 +9,7 @@ const App = () => {
 
       <div className="flex flex-grow">
         <Sidebar />
-        <main className="p-3">
+        <main className="p-3 w-full">
           <Outlet />
         </main>
       </div>
