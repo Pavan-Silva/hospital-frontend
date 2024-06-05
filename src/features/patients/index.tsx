@@ -1,4 +1,6 @@
 import { DataTable } from "@/components/DataTable";
+import ErrorBox from "@/components/ErrorBox";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Patient, columnsPatient } from "@/components/patients/Columns";
 import {
   Breadcrumb,
@@ -9,22 +11,15 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import PatientService from "@/services/PatientService";
+import { useQuery } from "@tanstack/react-query";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 const Patients = () => {
-  const [patients, setPatients] = useState<Patient[]>([]);
-
-  useEffect(() => {
-    fetch("http://localhost:3000/api/patients", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setPatients(data));
+  const { data, error, isLoading } = useQuery<Patient[]>({
+    queryKey: ["patients"],
+    queryFn: PatientService.getAll,
   });
 
   return (
@@ -48,7 +43,7 @@ const Patients = () => {
           </Breadcrumb>
         </div>
 
-        <Link to="/" className="ml-auto">
+        <Link to="/patients/add" className="ml-auto">
           <Button className="gap-2 bg-purple">
             <IoPersonAddOutline className="size-4" />
             Add Patient
@@ -57,7 +52,13 @@ const Patients = () => {
       </div>
 
       <div className="mt-5">
-        <DataTable data={patients} columns={columnsPatient} />
+        {isLoading ? (
+          <LoadingSpinner />
+        ) : error ? (
+          <ErrorBox message={error.message} />
+        ) : (
+          <DataTable data={data || []} columns={columnsPatient} />
+        )}
       </div>
     </div>
   );

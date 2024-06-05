@@ -24,10 +24,11 @@ import {
 } from "@/components/ui/form";
 import FormHeader from "@/components/FormHeader";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import DoctorService from "@/services/DoctorService";
 import { Doctor } from "@/components/doctors/Columns";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorBox from "@/components/ErrorBox";
+import { Patient } from "@/components/patients/Columns";
+import PatientService from "@/services/PatientService";
 
 const formSchema = z.object({
   firstName: z.string().min(3, {
@@ -55,54 +56,55 @@ const formSchema = z.object({
 
   gender: z.string(),
 
-  specialization: z.string().min(3, {
+  address: z.string().min(3, {
     message: "Must be at least 3 characters.",
   }),
 });
 
-const DoctorForm = () => {
+const PatientForm = () => {
   const { query } = useParams();
   const location = useLocation();
 
   const {
-    data: pendingDoctor,
+    data: pendingPatient,
     error,
     isLoading,
-  } = useQuery<Doctor>({
-    queryKey: ["doctors"],
-    queryFn: () => DoctorService.getById(query as string),
-    enabled: query !== "add" && query ? true : false,
+  } = useQuery<Patient>({
+    queryKey: ["patients"],
+    queryFn: () => PatientService.getById(query as string),
+    enabled: query !== "add",
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     values: {
-      firstName: pendingDoctor?.name?.split(" ")[0] || "",
-      lastName: pendingDoctor?.name?.split(" ")[1] || "",
-      gender: pendingDoctor?.gender || "",
-      phone: pendingDoctor?.phone || "",
-      nic: pendingDoctor?.nic || "",
-      specialization: pendingDoctor?.specialization || "",
+      firstName: pendingPatient?.name?.split(" ")[0] || "",
+      lastName: pendingPatient?.name?.split(" ")[1] || "",
+      gender: pendingPatient?.gender || "",
+      phone: pendingPatient?.phone || "",
+      nic: pendingPatient?.nic || "",
+      address: pendingPatient?.address || "",
     },
   });
 
   const { mutate } = useMutation({
-    mutationKey: ["doctors"],
+    mutationKey: ["patients"],
     mutationFn: (data: Doctor) =>
-      pendingDoctor?._id
-        ? DoctorService.update(pendingDoctor._id, data)
-        : DoctorService.create(data),
+      pendingPatient?._id
+        ? PatientService.update(pendingPatient._id, data)
+        : PatientService.create(data),
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
-    const doctor: Doctor = {
+    const patient: Patient = {
       name: data.firstName + " " + data.lastName,
       phone: data.phone,
       gender: data.gender,
       nic: data.nic,
+      address: data.address,
     };
 
-    mutate(doctor);
+    mutate(patient);
   };
 
   const handleReset = () => {
@@ -112,17 +114,18 @@ const DoctorForm = () => {
       gender: "",
       phone: "",
       nic: "",
-      specialization: "",
+      address: "",
     });
   };
 
   return (
     <div className="rounded-md py-4 px-5 bg-white">
       <FormHeader
-        title={`${query === "add" ? "Add" : "Edit"} Doctor`}
+        title={`${query === "add" ? "Add" : "Edit"} Patient`}
         url={location.pathname}
         handleFormRefresh={handleReset}
       />
+
       {error && query !== "add" && <ErrorBox message={error.message} />}
 
       {isLoading && query !== "add" ? (
@@ -251,12 +254,12 @@ const DoctorForm = () => {
 
               <FormField
                 control={form.control}
-                name="specialization"
+                name="address"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>
                       <span className="text-red-500">* </span>
-                      Specialization
+                      Address
                     </FormLabel>
 
                     <FormMessage className="ml-1 inline" />
@@ -295,4 +298,4 @@ const DoctorForm = () => {
   );
 };
 
-export default DoctorForm;
+export default PatientForm;
