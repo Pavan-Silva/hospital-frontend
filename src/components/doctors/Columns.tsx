@@ -12,11 +12,12 @@ import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 
 export type Doctor = {
-  id: string;
+  _id?: string;
   name: string;
   phone: string;
   gender: string;
   specialization?: string;
+  nic: string;
 };
 
 export const columnsDoctor: ColumnDef<Doctor>[] = [
@@ -111,7 +112,7 @@ export const columnsDoctor: ColumnDef<Doctor>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
             <DropdownMenuItem>
-              <Link to={`/doctor/${doctor.id}`}>Edit</Link>
+              <Link to={`/doctors/${doctor._id}`}>Edit</Link>
             </DropdownMenuItem>
 
             <DropdownMenuItem>Delete</DropdownMenuItem>
