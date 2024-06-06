@@ -10,7 +10,7 @@ const getAll = async () => {
 
 const getById = async (id: string) => {
   const response = await fetch(`${baseUrl}/${id}`, {
-    credentials: "same-origin",
+    credentials: "include",
   });
   const data = await response.json();
   return data;
@@ -22,7 +22,7 @@ const create = async (data: Patient) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "same-origin",
+    credentials: "include",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -35,7 +35,7 @@ const update = async (id: string, data: Patient) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "same-origin",
+    credentials: "include",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -45,7 +45,7 @@ const update = async (id: string, data: Patient) => {
 const deleteById = async (id: string) => {
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
-    credentials: "same-origin",
+    credentials: "include",
   });
   const result = await response.json();
   return result;

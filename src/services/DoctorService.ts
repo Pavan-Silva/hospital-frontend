@@ -4,7 +4,7 @@ const baseUrl = "http://localhost:3000/api/doctors";
 
 const getAll = async () => {
   const response = await fetch(baseUrl, {
-    credentials: "same-origin",
+    credentials: "include",
   });
   const data = await response.json();
   return data;
@@ -12,7 +12,7 @@ const getAll = async () => {
 
 const getById = async (id: string) => {
   const response = await fetch(`${baseUrl}/${id}`, {
-    credentials: "same-origin",
+    credentials: "include",
   });
   const data = await response.json();
   return data;
@@ -24,7 +24,7 @@ const create = async (data: Doctor) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "same-origin",
+    credentials: "include",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -37,7 +37,7 @@ const update = async (id: string, data: Doctor) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "same-origin",
+    credentials: "include",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -47,7 +47,7 @@ const update = async (id: string, data: Doctor) => {
 const deleteById = async (id: string) => {
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
-    credentials: "same-origin",
+    credentials: "include",
   });
   const result = await response.json();
   return result;

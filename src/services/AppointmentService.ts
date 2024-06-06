@@ -3,13 +3,13 @@ import { Appointment } from "@/features/appointments/Columns";
 const baseUrl = "http://localhost:3000/api/appointments";
 
 const getAll = async () => {
-  const response = await fetch(baseUrl, { credentials: "same-origin" });
+  const response = await fetch(baseUrl, { credentials: "include" });
   const data = await response.json();
   return data;
 };
 
 const getById = async (id: string) => {
-  const response = await fetch(`${baseUrl}/${id}`, { credentials: "same-origin" });
+  const response = await fetch(`${baseUrl}/${id}`, { credentials: "include" });
   const data = await response.json();
   return data;
 };
@@ -20,7 +20,7 @@ const create = async (data: Appointment) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "same-origin",
+    credentials: "include",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -33,7 +33,7 @@ const update = async (id: string, data: Appointment) => {
     headers: {
       "Content-Type": "application/json",
     },
-    credentials: "same-origin",
+    credentials: "include",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -43,7 +43,7 @@ const update = async (id: string, data: Appointment) => {
 const deleteById = async (id: string) => {
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
-    credentials: "same-origin",
+    credentials: "include",
   });
   const result = await response.json();
   return result;

@@ -31,6 +31,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           username,
           password,
         }),
+        credentials: "include",
       })
         .then((response) => response.json())
         .then((data: User) => {
