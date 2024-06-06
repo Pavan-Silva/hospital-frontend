@@ -17,8 +17,11 @@ import { GoSignOut } from "react-icons/go";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
 import Searchbox from "./Searchbox";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
+  const auth = useAuth();
+
   return (
     <div className="w-full bg-purple text-white text-opacity-60 h-[60px] p-3 flex items-center gap-2">
       <div className="flex gap-2 pointer-events-none mr-2">
@@ -68,7 +71,7 @@ const Navbar = () => {
                 </div>
               </DropdownMenuItem>
 
-              <DropdownMenuItem>
+              <DropdownMenuItem onClick={() => auth?.logOut()}>
                 <div className="flex gap-2 items-center">
                   <GoSignOut />
                   <span>Logout</span>

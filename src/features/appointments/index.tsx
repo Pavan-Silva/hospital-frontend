@@ -1,7 +1,4 @@
-import {
-  Appointment,
-  columnsAppointment,
-} from "@/components/appointments/Columns";
+import { Appointment, columnsAppointment } from "./Columns";
 import { DataTable } from "@/components/DataTable";
 import ErrorBox from "@/components/ErrorBox";
 import LoadingSpinner from "@/components/LoadingSpinner";

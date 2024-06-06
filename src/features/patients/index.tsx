@@ -1,7 +1,7 @@
 import { DataTable } from "@/components/DataTable";
 import ErrorBox from "@/components/ErrorBox";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import { Patient, columnsPatient } from "@/components/patients/Columns";
+import { Patient, columnsPatient } from "./Columns";
 import {
   Breadcrumb,
   BreadcrumbItem,
