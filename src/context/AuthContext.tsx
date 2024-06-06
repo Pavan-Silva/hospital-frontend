@@ -1,7 +1,8 @@
 import { createContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 type User = {
-  name: string;
+  username: string;
   role: string;
 };
 
@@ -14,11 +15,17 @@ type Auth = {
 export const AuthContext = createContext<Auth | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
+  const navigate = useNavigate();
+
+  const [user, setUser] = useState<User | null>(
+    localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user")!)
+      : null
+  );
 
   const login = (username: string, password: string) => {
     try {
-      fetch("http://localhost:5000/api/auth/login", {
+      fetch("http://localhost:3000/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -27,7 +34,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       })
         .then((response) => response.json())
         .then((data: User) => {
+          localStorage.setItem("user", JSON.stringify(data));
           setUser(data);
+          navigate("/");
         });
     } catch (error) {
       console.log(error);
@@ -35,7 +44,9 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logOut = () => {
+    localStorage.removeItem("user");
     setUser(null);
+    navigate("/login");
   };
 
   return (
