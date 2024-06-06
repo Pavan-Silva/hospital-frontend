@@ -1,15 +1,17 @@
-import { Patient } from "@/components/patients/Columns";
+import { Patient } from "@/features/patients/Columns";
 
 const baseUrl = "http://localhost:3000/api/patients";
 
 const getAll = async () => {
-  const response = await fetch(baseUrl);
+  const response = await fetch(baseUrl, { credentials: "same-origin" });
   const data = await response.json();
   return data;
 };
 
 const getById = async (id: string) => {
-  const response = await fetch(`${baseUrl}/${id}`);
+  const response = await fetch(`${baseUrl}/${id}`, {
+    credentials: "same-origin",
+  });
   const data = await response.json();
   return data;
 };
@@ -20,6 +22,7 @@ const create = async (data: Patient) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "same-origin",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -32,6 +35,7 @@ const update = async (id: string, data: Patient) => {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "same-origin",
     body: JSON.stringify(data),
   });
   const result = await response.json();
@@ -41,6 +45,7 @@ const update = async (id: string, data: Patient) => {
 const deleteById = async (id: string) => {
   const response = await fetch(`${baseUrl}/${id}`, {
     method: "DELETE",
+    credentials: "same-origin",
   });
   const result = await response.json();
   return result;

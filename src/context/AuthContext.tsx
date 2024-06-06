@@ -1,5 +1,4 @@
 import { createContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 type User = {
   username: string;
@@ -15,8 +14,6 @@ type Auth = {
 export const AuthContext = createContext<Auth | null>(null);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const navigate = useNavigate();
-
   const [user, setUser] = useState<User | null>(
     localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user")!)
@@ -30,13 +27,16 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username,
+          password,
+        }),
       })
         .then((response) => response.json())
         .then((data: User) => {
           localStorage.setItem("user", JSON.stringify(data));
           setUser(data);
-          navigate("/");
+          window.location.replace("/");
         });
     } catch (error) {
       console.log(error);
@@ -46,7 +46,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logOut = () => {
     localStorage.removeItem("user");
     setUser(null);
-    navigate("/login");
+    window.location.replace("/login");
   };
 
   return (
