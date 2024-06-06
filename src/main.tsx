@@ -12,6 +12,7 @@ import Appointments from "./features/appointments/index.tsx";
 
 import DoctorForm from "./features/doctors/form.tsx";
 import PatientForm from "./features/patients/form.tsx";
+import AppointmentForm from "./features/appointments/form.tsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -52,6 +53,11 @@ const router = createBrowserRouter([
       {
         path: "/appointments",
         element: <Appointments />,
+      },
+
+      {
+        path: "/appointments/:query",
+        element: <AppointmentForm />,
       },
     ],
   },

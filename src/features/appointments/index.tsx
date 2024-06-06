@@ -3,6 +3,8 @@ import {
   columnsAppointment,
 } from "@/components/appointments/Columns";
 import { DataTable } from "@/components/DataTable";
+import ErrorBox from "@/components/ErrorBox";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,22 +14,15 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
+import AppointmentService from "@/services/AppointmentService";
+import { useQuery } from "@tanstack/react-query";
 import { IoPersonAddOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 
 const Appointments = () => {
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-
-  useEffect(() => {
-    fetch("http://localhost:3000/api/appointments", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setAppointments(data));
+  const { data, error, isLoading } = useQuery<Appointment[]>({
+    queryKey: ["appointments"],
+    queryFn: AppointmentService.getAll,
   });
 
   return (
@@ -51,7 +46,7 @@ const Appointments = () => {
           </Breadcrumb>
         </div>
 
-        <Link to="/" className="ml-auto">
+        <Link to="/appointments/add" className="ml-auto">
           <Button className="gap-2 bg-purple">
             <IoPersonAddOutline className="size-4" />
             Add Appointment
@@ -60,7 +55,13 @@ const Appointments = () => {
       </div>
 
       <div className="mt-5">
-        <DataTable data={appointments} columns={columnsAppointment} />
+        {isLoading || !data ? (
+          <LoadingSpinner />
+        ) : error ? (
+          <ErrorBox message={error.message} />
+        ) : (
+          <DataTable data={data} columns={columnsAppointment} />
+        )}
       </div>
     </div>
   );

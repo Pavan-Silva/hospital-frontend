@@ -12,11 +12,10 @@ import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
 
 export type Appointment = {
-  id: string;
+  _id?: string;
   doctorId: string;
   patientId: string;
-  date: string;
-  time: string;
+  date: Date;
 };
 
 export const columnsAppointment: ColumnDef<Appointment>[] = [
@@ -87,12 +86,6 @@ export const columnsAppointment: ColumnDef<Appointment>[] = [
   },
 
   {
-    accessorKey: "time",
-    header: "Time",
-    cell: ({ row }) => <div className="capitalize">{row.getValue("time")}</div>,
-  },
-
-  {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
@@ -111,7 +104,7 @@ export const columnsAppointment: ColumnDef<Appointment>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
             <DropdownMenuItem>
-              <Link to={`/appointment/${appointment.id}`}>Edit</Link>
+              <Link to={`/appointment/${appointment._id}`}>Edit</Link>
             </DropdownMenuItem>
 
             <DropdownMenuItem>Delete</DropdownMenuItem>

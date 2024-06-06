@@ -1,6 +1,6 @@
 import { MdOutlineHealthAndSafety } from "react-icons/md";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import { CgMenuGridO } from "react-icons/cg";
+import { HiOutlineDotsVertical } from "react-icons/hi";
 import { GoTasklist } from "react-icons/go";
 import {
   DropdownMenu,
@@ -52,7 +52,7 @@ const Navbar = () => {
                 </AvatarFallback>
               </Avatar>
 
-              <CgMenuGridO className="size-6" />
+              <HiOutlineDotsVertical className="size-6" />
             </div>
           </DropdownMenuTrigger>
 

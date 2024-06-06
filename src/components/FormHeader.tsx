@@ -24,7 +24,7 @@ const FormHeader = ({
     <div className="flex items-center">
       <div>
         <div className="flex gap-2">
-          <Link to="/doctors">
+          <Link to={`/${url.split("/")[1]}`}>
             <Button variant="ghost" size="icon" className="-ml-2">
               <FaArrowLeft className="size-5" />
             </Button>

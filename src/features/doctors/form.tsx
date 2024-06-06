@@ -282,7 +282,7 @@ const DoctorForm = () => {
 
               <Button
                 type="submit"
-                className={`${query === "Add" ? "w-32" : ""}`}
+                className={`${query === "add" ? "w-32" : ""}`}
               >
                 <FaRegSave className="mr-2 size-4" />
                 Save
