@@ -65,7 +65,7 @@ const DoctorForm = () => {
   const location = useLocation();
 
   const {
-    data: pendingDoctor,
+    data: editableDoctor,
     error,
     isLoading,
   } = useQuery<Doctor>({
@@ -74,24 +74,29 @@ const DoctorForm = () => {
     enabled: query !== "add" && query ? true : false,
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    values: {
-      firstName: pendingDoctor?.name?.split(" ")[0] || "",
-      lastName: pendingDoctor?.name?.split(" ")[1] || "",
-      gender: pendingDoctor?.gender || "",
-      phone: pendingDoctor?.phone || "",
-      nic: pendingDoctor?.nic || "",
-      specialization: pendingDoctor?.specialization || "",
-    },
-  });
-
   const { mutate } = useMutation({
     mutationKey: ["doctors"],
     mutationFn: (data: Doctor) =>
-      pendingDoctor?._id
-        ? DoctorService.update(pendingDoctor._id, data)
+      editableDoctor?._id
+        ? DoctorService.update(editableDoctor._id, data)
         : DoctorService.create(data),
+  });
+
+  const { mutate: deleteDoctor } = useMutation({
+    mutationKey: ["doctors"],
+    mutationFn: () => DoctorService.deleteById(editableDoctor?._id as string),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    values: {
+      firstName: editableDoctor?.name?.split(" ")[0] || "",
+      lastName: editableDoctor?.name?.split(" ")[1] || "",
+      gender: editableDoctor?.gender || "",
+      phone: editableDoctor?.phone || "",
+      nic: editableDoctor?.nic || "",
+      specialization: editableDoctor?.specialization || "",
+    },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -273,6 +278,8 @@ const DoctorForm = () => {
               {query !== "add" && (
                 <Button
                   variant="outline"
+                  type="button"
+                  onClick={() => deleteDoctor()}
                   className="text-red-500 border-red-100"
                 >
                   <MdDeleteOutline className="mr-1 size-5" />

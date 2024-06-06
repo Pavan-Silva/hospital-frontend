@@ -66,7 +66,7 @@ const PatientForm = () => {
   const location = useLocation();
 
   const {
-    data: pendingPatient,
+    data: editablePatient,
     error,
     isLoading,
   } = useQuery<Patient>({
@@ -75,24 +75,29 @@ const PatientForm = () => {
     enabled: query !== "add",
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    values: {
-      firstName: pendingPatient?.name?.split(" ")[0] || "",
-      lastName: pendingPatient?.name?.split(" ")[1] || "",
-      gender: pendingPatient?.gender || "",
-      phone: pendingPatient?.phone || "",
-      nic: pendingPatient?.nic || "",
-      address: pendingPatient?.address || "",
-    },
-  });
-
   const { mutate } = useMutation({
     mutationKey: ["patients"],
     mutationFn: (data: Doctor) =>
-      pendingPatient?._id
-        ? PatientService.update(pendingPatient._id, data)
+      editablePatient?._id
+        ? PatientService.update(editablePatient._id, data)
         : PatientService.create(data),
+  });
+
+  const { mutate: deletePatient } = useMutation({
+    mutationKey: ["patients"],
+    mutationFn: () => PatientService.deleteById(editablePatient?._id as string),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    values: {
+      firstName: editablePatient?.name?.split(" ")[0] || "",
+      lastName: editablePatient?.name?.split(" ")[1] || "",
+      gender: editablePatient?.gender || "",
+      phone: editablePatient?.phone || "",
+      nic: editablePatient?.nic || "",
+      address: editablePatient?.address || "",
+    },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -276,6 +281,8 @@ const PatientForm = () => {
               {query !== "add" && (
                 <Button
                   variant="outline"
+                  type="button"
+                  onClick={() => deletePatient()}
                   className="text-red-500 border-red-100"
                 >
                   <MdDeleteOutline className="mr-1 size-5" />

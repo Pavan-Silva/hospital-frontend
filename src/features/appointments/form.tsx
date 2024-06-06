@@ -54,7 +54,7 @@ const AppointmentForm = () => {
   const location = useLocation();
 
   const {
-    data: pendingAppointment,
+    data: editableAppointment,
     error,
     isLoading,
   } = useQuery<Appointment>({
@@ -72,21 +72,27 @@ const AppointmentForm = () => {
     queryFn: () => DoctorService.getAll(),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    values: {
-      patient: pendingAppointment?.patientId || "",
-      doctor: pendingAppointment?.doctorId || "",
-      date: pendingAppointment?.date || new Date(),
-    },
-  });
-
   const { mutate } = useMutation({
     mutationKey: ["appointments"],
     mutationFn: (data: Appointment) =>
-      pendingAppointment?._id
-        ? AppointmentService.update(pendingAppointment._id, data)
+      editableAppointment?._id
+        ? AppointmentService.update(editableAppointment?._id, data)
         : AppointmentService.create(data),
+  });
+
+  const { mutate: deleteAppointment } = useMutation({
+    mutationKey: ["appointments"],
+    mutationFn: () =>
+      AppointmentService.deleteById(editableAppointment?._id as string),
+  });
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    values: {
+      patient: editableAppointment?.patientId || "",
+      doctor: editableAppointment?.doctorId || "",
+      date: editableAppointment?.date || new Date(),
+    },
   });
 
   const onSubmit = (data: z.infer<typeof formSchema>) => {
@@ -280,7 +286,9 @@ const AppointmentForm = () => {
               {query !== "add" && (
                 <Button
                   variant="outline"
+                  type="button"
                   className="text-red-500 border-red-100"
+                  onClick={() => deleteAppointment()}
                 >
                   <MdDeleteOutline className="mr-1 size-5" />
                   Delete
