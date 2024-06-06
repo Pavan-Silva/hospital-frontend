@@ -20,6 +20,8 @@ const FormHeader = ({
   url: string;
   handleFormRefresh: () => void;
 }) => {
+  const path = url.split("/").slice(1);
+
   return (
     <div className="flex items-center">
       <div>
@@ -41,8 +43,8 @@ const FormHeader = ({
 
             <BreadcrumbSeparator />
 
-            {url.split("/").map((item, index) =>
-              url.split("/").length - 1 !== index ? (
+            {path.map((item, index) =>
+              path.length - 1 !== index ? (
                 <>
                   <BreadcrumbItem key={index}>
                     <BreadcrumbLink href={`/${item}`} className="capitalize">
@@ -53,7 +55,9 @@ const FormHeader = ({
                 </>
               ) : (
                 <BreadcrumbItem key={index}>
-                  <BreadcrumbPage className="capitalize">{item}</BreadcrumbPage>
+                  <BreadcrumbPage className="capitalize">
+                    {item === "add" ? "Add" : "Edit"}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               )
             )}
@@ -72,4 +76,5 @@ const FormHeader = ({
     </div>
   );
 };
+
 export default FormHeader;
