@@ -25,40 +25,10 @@ import {
 import FormHeader from "@/components/FormHeader";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import DoctorService from "@/services/DoctorService";
-import { Doctor } from "@/components/doctors/Columns";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorBox from "@/components/ErrorBox";
-
-const formSchema = z.object({
-  firstName: z.string().min(3, {
-    message: "Must be at least 3 characters.",
-  }),
-
-  lastName: z.string().min(3, {
-    message: "Must be at least 3 characters.",
-  }),
-
-  phone: z.string().regex(new RegExp(/^[0-9]{10}$/), {
-    message: "number is invalid.",
-  }),
-
-  nic: z
-    .string()
-    .regex(
-      new RegExp(
-        /^(([5,6,7,8,9]{1})([0-9]{1})([0,1,2,3,5,6,7,8]{1})([0-9]{6})([v|V|x|X]))|(([1,2]{1})([0,9]{1})([0-9]{2})([0,1,2,3,5,6,7,8]{1})([0-9]{7}))/gm
-      ),
-      {
-        message: "is invalid.",
-      }
-    ),
-
-  gender: z.string(),
-
-  specialization: z.string().min(3, {
-    message: "Must be at least 3 characters.",
-  }),
-});
+import { doctorFormSchema } from "@/features/doctors/FormSchema";
+import { Doctor } from "./Columns";
 
 const DoctorForm = () => {
   const { query } = useParams();
@@ -87,8 +57,8 @@ const DoctorForm = () => {
     mutationFn: () => DoctorService.deleteById(editableDoctor?._id as string),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof doctorFormSchema>>({
+    resolver: zodResolver(doctorFormSchema),
     values: {
       firstName: editableDoctor?.name?.split(" ")[0] || "",
       lastName: editableDoctor?.name?.split(" ")[1] || "",
@@ -99,7 +69,7 @@ const DoctorForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: z.infer<typeof doctorFormSchema>) => {
     const doctor: Doctor = {
       name: data.firstName + " " + data.lastName,
       phone: data.phone,

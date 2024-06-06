@@ -24,42 +24,12 @@ import {
 } from "@/components/ui/form";
 import FormHeader from "@/components/FormHeader";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Doctor } from "@/components/doctors/Columns";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorBox from "@/components/ErrorBox";
-import { Patient } from "@/components/patients/Columns";
 import PatientService from "@/services/PatientService";
-
-const formSchema = z.object({
-  firstName: z.string().min(3, {
-    message: "Must be at least 3 characters.",
-  }),
-
-  lastName: z.string().min(3, {
-    message: "Must be at least 3 characters.",
-  }),
-
-  phone: z.string().regex(new RegExp(/^[0-9]{10}$/), {
-    message: "number is invalid.",
-  }),
-
-  nic: z
-    .string()
-    .regex(
-      new RegExp(
-        /^(([5,6,7,8,9]{1})([0-9]{1})([0,1,2,3,5,6,7,8]{1})([0-9]{6})([v|V|x|X]))|(([1,2]{1})([0,9]{1})([0-9]{2})([0,1,2,3,5,6,7,8]{1})([0-9]{7}))/gm
-      ),
-      {
-        message: "is invalid.",
-      }
-    ),
-
-  gender: z.string(),
-
-  address: z.string().min(3, {
-    message: "Must be at least 3 characters.",
-  }),
-});
+import { patientFormSchema } from "@/features/patients/FormSchema";
+import { Patient } from "./Columns";
+import { Doctor } from "../doctors/Columns";
 
 const PatientForm = () => {
   const { query } = useParams();
@@ -88,8 +58,8 @@ const PatientForm = () => {
     mutationFn: () => PatientService.deleteById(editablePatient?._id as string),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof patientFormSchema>>({
+    resolver: zodResolver(patientFormSchema),
     values: {
       firstName: editablePatient?.name?.split(" ")[0] || "",
       lastName: editablePatient?.name?.split(" ")[1] || "",
@@ -100,7 +70,7 @@ const PatientForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: z.infer<typeof patientFormSchema>) => {
     const patient: Patient = {
       name: data.firstName + " " + data.lastName,
       phone: data.phone,

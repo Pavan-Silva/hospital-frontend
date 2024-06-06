@@ -18,7 +18,6 @@ import FormHeader from "@/components/FormHeader";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorBox from "@/components/ErrorBox";
-import { Appointment } from "@/components/appointments/Columns";
 import AppointmentService from "@/services/AppointmentService";
 import {
   Popover,
@@ -27,7 +26,6 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import DoctorService from "@/services/DoctorService";
-import { Doctor } from "@/components/doctors/Columns";
 import {
   Command,
   CommandEmpty,
@@ -38,16 +36,9 @@ import {
 import { CalendarIcon, Check, ChevronsUpDown } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { format } from "date-fns";
-
-const formSchema = z.object({
-  patient: z.string().min(3, {
-    message: "Must be at least 3 characters.",
-  }),
-
-  doctor: z.string(),
-
-  date: z.date(),
-});
+import { appointmentFormSchema } from "@/features/appointments/FormSchema";
+import { Doctor } from "../doctors/Columns";
+import { Appointment } from "./Columns";
 
 const AppointmentForm = () => {
   const { query } = useParams();
@@ -86,8 +77,8 @@ const AppointmentForm = () => {
       AppointmentService.deleteById(editableAppointment?._id as string),
   });
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof appointmentFormSchema>>({
+    resolver: zodResolver(appointmentFormSchema),
     values: {
       patient: editableAppointment?.patientId || "",
       doctor: editableAppointment?.doctorId || "",
@@ -95,7 +86,7 @@ const AppointmentForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof formSchema>) => {
+  const onSubmit = (data: z.infer<typeof appointmentFormSchema>) => {
     const appointment: Appointment = {
       patientId: data.patient,
       doctorId: data.doctor,
