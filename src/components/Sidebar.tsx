@@ -11,25 +11,31 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion";
+import { useAuth } from "@/hooks/useAuth";
 
 const sidebarItems = [
   {
     title: "Doctors",
     icon: <FaUserDoctor className="size-6" />,
+    allowedRoles: ["ADMIN"],
   },
 
   {
     title: "Patients",
     icon: <IoPersonOutline className="size-6" />,
+    allowedRoles: ["ADMIN"],
   },
 
   {
     title: "Appointments",
     icon: <MdOutlineSchedule className="size-6" />,
+    allowedRoles: ["ADMIN", "DOCTOR"],
   },
-] as { title: string; icon: ReactElement }[];
+] as { title: string; icon: ReactElement; allowedRoles: string[] }[];
 
 const Sidebar = () => {
+  const { user } = useAuth();
+
   return (
     <div className="bg-white h-full w-[245px] p-3 text-black text-opacity-70 font-semibold">
       <NavLink
@@ -53,45 +59,52 @@ const Sidebar = () => {
           </AccordionTrigger>
 
           <AccordionContent className="py-2">
-            {sidebarItems.map((item) => (
+            {sidebarItems.map(
+              (item) =>
+                item.allowedRoles.includes(user?.role as string) && (
+                  <NavLink
+                    to={`/${item.title.toLowerCase()}`}
+                    key={item.title}
+                    className={({ isActive }) =>
+                      `flex items-center w-full justify-start text-[1em] gap-3 p-3 rounded-lg ${
+                        isActive
+                          ? "bg-light_gray text-purple"
+                          : "hover:text-purple"
+                      }`
+                    }
+                  >
+                    {item.icon}
+                    <span>{item.title}</span>
+                  </NavLink>
+                )
+            )}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      {user?.role === "ADMIN" && (
+        <Accordion type="multiple" className="w-full" defaultValue={["admin"]}>
+          <AccordionItem value="admin" className="border-none">
+            <AccordionTrigger className="border-b pb-3">
+              <span className="ml-3 text-sm opacity-80">Admin</span>
+            </AccordionTrigger>
+
+            <AccordionContent className="pt-2">
               <NavLink
-                to={`/${item.title.toLowerCase()}`}
-                key={item.title}
+                to="/users"
                 className={({ isActive }) =>
                   `flex items-center w-full justify-start text-[1em] gap-3 p-3 rounded-lg ${
                     isActive ? "bg-light_gray text-purple" : "hover:text-purple"
                   }`
                 }
               >
-                {item.icon}
-                <span>{item.title}</span>
+                <FiUsers className="size-5" />
+                <span>System Users</span>
               </NavLink>
-            ))}
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
-
-      <Accordion type="multiple" className="w-full" defaultValue={["admin"]}>
-        <AccordionItem value="admin" className="border-none">
-          <AccordionTrigger className="border-b pb-3">
-            <span className="ml-3 text-sm opacity-80">Admin</span>
-          </AccordionTrigger>
-
-          <AccordionContent className="pt-2">
-            <NavLink
-              to="/users"
-              className={({ isActive }) =>
-                `flex items-center w-full justify-start text-[1em] gap-3 p-3 rounded-lg ${
-                  isActive ? "bg-light_gray text-purple" : "hover:text-purple"
-                }`
-              }
-            >
-              <FiUsers className="size-5" />
-              <span>System Users</span>
-            </NavLink>
-          </AccordionContent>
-        </AccordionItem>
-      </Accordion>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      )}
     </div>
   );
 };
