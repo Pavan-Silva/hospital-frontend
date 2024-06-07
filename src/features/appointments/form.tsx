@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { FaRegSave } from "react-icons/fa";
@@ -47,6 +47,7 @@ const AppointmentForm = () => {
   const location = useLocation();
   const toast = useToast();
   const dialog = useDialog();
+  const navigate = useNavigate();
 
   const {
     data: editableAppointment,
@@ -74,8 +75,11 @@ const AppointmentForm = () => {
         ? AppointmentService.update(editableAppointment?._id, data)
         : AppointmentService.create(data),
 
-    onSuccess: () => toast.success(),
     onError: () => toast.error(),
+    onSuccess: () => {
+      toast.success();
+      navigate("/appointments");
+    },
   });
 
   const { mutate: deleteAppointment } = useMutation({
@@ -83,8 +87,11 @@ const AppointmentForm = () => {
     mutationFn: () =>
       AppointmentService.deleteById(editableAppointment?._id as string),
 
-    onSuccess: () => toast.success(),
     onError: () => toast.error(),
+    onSuccess: () => {
+      toast.success();
+      navigate("/appointments");
+    },
   });
 
   const form = useForm<z.infer<typeof appointmentFormSchema>>({
@@ -272,7 +279,12 @@ const AppointmentForm = () => {
                         <Calendar
                           mode="single"
                           selected={new Date(field.value)}
-                          onSelect={field.onChange}
+                          onSelect={(date) => {
+                            form.setValue(
+                              "date",
+                              date?.toDateString() as string
+                            );
+                          }}
                           disabled={(date: Date) => date < new Date()}
                           initialFocus
                         />

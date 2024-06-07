@@ -103,8 +103,8 @@ export const columnsAppointment: ColumnDef<Appointment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-            <DropdownMenuItem>
-              <Link to={`/appointment/${appointment._id}`}>Edit</Link>
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link to={`/appointments/${appointment._id}`}>Edit</Link>
             </DropdownMenuItem>
 
             <DropdownMenuItem>Delete</DropdownMenuItem>
