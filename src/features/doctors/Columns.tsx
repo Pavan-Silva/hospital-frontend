@@ -1,3 +1,4 @@
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -16,7 +17,7 @@ export type Doctor = {
   name: string;
   phone: string;
   gender: string;
-  specialization?: string;
+  specialization: string;
   nic: string;
 };
 
@@ -62,6 +63,12 @@ export const columnsDoctor: ColumnDef<Doctor>[] = [
   },
 
   {
+    accessorKey: "nic",
+    header: "NIC",
+    cell: ({ row }) => <div>{row.getValue("nic")}</div>,
+  },
+
+  {
     accessorKey: "phone",
     header: "Phone",
     cell: ({ row }) => <div>{row.getValue("phone")}</div>,
@@ -71,7 +78,9 @@ export const columnsDoctor: ColumnDef<Doctor>[] = [
     accessorKey: "gender",
     header: "Gender",
     cell: ({ row }) => (
-      <div className="capitalize">{row.getValue("gender")}</div>
+      <Badge className="capitalize border border-purple border-opacity-40 bg-purple bg-opacity-5 text-purple">
+        {row.getValue("gender")}
+      </Badge>
     ),
   },
 
@@ -111,7 +120,7 @@ export const columnsDoctor: ColumnDef<Doctor>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
-            <DropdownMenuItem>
+            <DropdownMenuItem asChild className="cursor-pointer">
               <Link to={`/doctors/${doctor._id}`}>Edit</Link>
             </DropdownMenuItem>
 

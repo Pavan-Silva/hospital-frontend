@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,6 +37,7 @@ const DoctorForm = () => {
   const location = useLocation();
   const dialog = useDialog();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const {
     data: editableDoctor,
@@ -55,16 +56,22 @@ const DoctorForm = () => {
         ? DoctorService.update(editableDoctor._id, data)
         : DoctorService.create(data),
 
-    onSuccess: () => toast.success(),
     onError: () => toast.error(),
+    onSuccess: () => {
+      toast.success();
+      navigate("/doctors");
+    },
   });
 
   const { mutate: deleteDoctor } = useMutation({
     mutationKey: ["doctors"],
     mutationFn: () => DoctorService.deleteById(editableDoctor?._id as string),
-    
-    onSuccess: () => toast.success(),
+
     onError: () => toast.error(),
+    onSuccess: () => {
+      toast.success();
+      navigate("/doctors");
+    },
   });
 
   const form = useForm<z.infer<typeof doctorFormSchema>>({
@@ -85,6 +92,7 @@ const DoctorForm = () => {
       phone: data.phone,
       gender: data.gender,
       nic: data.nic,
+      specialization: data.specialization,
     };
 
     dialog.open(`${query === "add" ? "Create" : "Edit"} Doctor`, () => {
