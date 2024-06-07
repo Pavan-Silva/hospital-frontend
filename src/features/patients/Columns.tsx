@@ -111,7 +111,7 @@ export const columnsPatient: ColumnDef<Patient>[] = [
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
 
             <DropdownMenuItem asChild className="cursor-pointer">
-              <Link to={`/patient/${patient._id}`}>Edit</Link>
+              <Link to={`/patients/${patient._id}`}>Edit</Link>
             </DropdownMenuItem>
 
             <DropdownMenuItem>Delete</DropdownMenuItem>
