@@ -30,10 +30,14 @@ import PatientService from "@/services/PatientService";
 import { patientFormSchema } from "@/features/patients/FormSchema";
 import { Patient } from "./Columns";
 import { Doctor } from "../doctors/Columns";
+import { useDialog } from "@/hooks/useDialog";
+import { useToast } from "@/hooks/useToast";
 
 const PatientForm = () => {
   const { query } = useParams();
   const location = useLocation();
+  const dialog = useDialog();
+  const toast = useToast();
 
   const {
     data: editablePatient,
@@ -51,11 +55,17 @@ const PatientForm = () => {
       editablePatient?._id
         ? PatientService.update(editablePatient._id, data)
         : PatientService.create(data),
+
+    onSuccess: () => toast.success(),
+    onError: () => toast.error(),
   });
 
   const { mutate: deletePatient } = useMutation({
     mutationKey: ["patients"],
     mutationFn: () => PatientService.deleteById(editablePatient?._id as string),
+
+    onSuccess: () => toast.success(),
+    onError: () => toast.error(),
   });
 
   const form = useForm<z.infer<typeof patientFormSchema>>({
@@ -79,7 +89,9 @@ const PatientForm = () => {
       address: data.address,
     };
 
-    mutate(patient);
+    dialog.open(`${query === "add" ? "Create" : "Edit"} Patient`, () => {
+      mutate(patient);
+    });
   };
 
   const handleReset = () => {
@@ -252,7 +264,9 @@ const PatientForm = () => {
                 <Button
                   variant="outline"
                   type="button"
-                  onClick={() => deletePatient()}
+                  onClick={() =>
+                    dialog.open("Delete Patient", () => deletePatient())
+                  }
                   className="text-red-500 border-red-100"
                 >
                   <MdDeleteOutline className="mr-1 size-5" />
