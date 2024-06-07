@@ -11,12 +11,12 @@ type Auth = {
   logOut: () => void;
 };
 
-export const AuthContext = createContext<Auth | null>(null);
+export const AuthContext = createContext<Auth>({} as Auth);
 
 const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(
-    localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user")!)
+    sessionStorage.getItem("user")
+      ? JSON.parse(sessionStorage.getItem("user")!)
       : null
   );
 
@@ -35,7 +35,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       })
         .then((response) => response.json())
         .then((data: User) => {
-          localStorage.setItem("user", JSON.stringify(data));
+          sessionStorage.setItem("user", JSON.stringify(data));
           setUser(data);
           window.location.replace("/");
         });
@@ -45,7 +45,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const logOut = () => {
-    localStorage.removeItem("user");
+    sessionStorage.removeItem("user");
     setUser(null);
     window.location.replace("/login");
   };
