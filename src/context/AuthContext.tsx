@@ -22,7 +22,7 @@ const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = (username: string, password: string) => {
     try {
-      fetch("http://localhost:3000/api/auth/login", {
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/login}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

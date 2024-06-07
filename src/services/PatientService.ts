@@ -1,6 +1,6 @@
 import { Patient } from "@/features/patients/Columns";
 
-const baseUrl = "http://localhost:3000/api/patients";
+const baseUrl = `${import.meta.env.VITE_API_URL}/patients`;
 
 const getAll = async () => {
   const response = await fetch(baseUrl, { credentials: "include" });
