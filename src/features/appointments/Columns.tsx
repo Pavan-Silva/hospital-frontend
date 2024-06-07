@@ -10,12 +10,14 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Link } from "react-router-dom";
+import { Doctor } from "../doctors/Columns";
 
 export type Appointment = {
   _id?: string;
   doctorId: string;
   patientId: string;
   date: string;
+  doctor?: Doctor;
 };
 
 export const columnsAppointment: ColumnDef<Appointment>[] = [
@@ -44,20 +46,21 @@ export const columnsAppointment: ColumnDef<Appointment>[] = [
   },
 
   {
-    accessorKey: "doctorId",
+    accessorKey: "doctor",
+    accessorFn: (row) => row.doctor?.name,
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          DoctorId
+          Doctor
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("doctorId")}</div>
+      <div className="capitalize">{row.getValue("doctor")}</div>
     ),
   },
 
