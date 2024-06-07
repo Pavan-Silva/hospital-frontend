@@ -15,7 +15,7 @@ export type Appointment = {
   _id?: string;
   doctorId: string;
   patientId: string;
-  date: Date;
+  date: string;
 };
 
 export const columnsAppointment: ColumnDef<Appointment>[] = [

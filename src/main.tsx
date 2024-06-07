@@ -1,9 +1,10 @@
 import React from "react";
 import App from "./App.tsx";
 import ReactDOM from "react-dom/client";
+import AuthProvider from "./context/AuthContext";
+import { Toaster } from "./components/ui/toaster.tsx";
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import AuthProvider from "./context/AuthContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import LoginPage from "./pages/LoginPage.tsx";
@@ -89,6 +90,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <AuthProvider>
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
+        <Toaster />
       </QueryClientProvider>
     </AuthProvider>
   </React.StrictMode>

@@ -39,10 +39,12 @@ import { format } from "date-fns";
 import { appointmentFormSchema } from "@/features/appointments/FormSchema";
 import { Doctor } from "../doctors/Columns";
 import { Appointment } from "./Columns";
+import { useToast } from "@/hooks/useToast";
 
 const AppointmentForm = () => {
   const { query } = useParams();
   const location = useLocation();
+  const toast = useToast();
 
   const {
     data: editableAppointment,
@@ -69,26 +71,32 @@ const AppointmentForm = () => {
       editableAppointment?._id
         ? AppointmentService.update(editableAppointment?._id, data)
         : AppointmentService.create(data),
+
+    onSuccess: () => toast.success(),
+    onError: () => toast.error(),
   });
 
   const { mutate: deleteAppointment } = useMutation({
     mutationKey: ["appointments"],
     mutationFn: () =>
       AppointmentService.deleteById(editableAppointment?._id as string),
+
+    onSuccess: () => toast.success(),
+    onError: () => toast.error(),
   });
 
   const form = useForm<z.infer<typeof appointmentFormSchema>>({
     resolver: zodResolver(appointmentFormSchema),
     values: {
-      patient: editableAppointment?.patientId || "",
+      patientId: editableAppointment?.patientId || "",
       doctor: editableAppointment?.doctorId || "",
-      date: editableAppointment?.date || new Date(),
+      date: editableAppointment?.date || new Date().toDateString(),
     },
   });
 
   const onSubmit = (data: z.infer<typeof appointmentFormSchema>) => {
     const appointment: Appointment = {
-      patientId: data.patient,
+      patientId: data.patientId,
       doctorId: data.doctor,
       date: data.date,
     };
@@ -98,9 +106,9 @@ const AppointmentForm = () => {
 
   const handleReset = () => {
     form.reset({
-      patient: "",
+      patientId: "",
       doctor: "",
-      date: new Date(),
+      date: new Date().toDateString(),
     });
   };
 
@@ -112,7 +120,7 @@ const AppointmentForm = () => {
         handleFormRefresh={handleReset}
       />
 
-      {(error && query !== "add") || doctorsError ? (
+      {error || doctorsError ? (
         <ErrorBox
           message={
             error?.message || doctorsError?.message || "Something went wrong"
@@ -120,7 +128,7 @@ const AppointmentForm = () => {
         />
       ) : null}
 
-      {isLoading || (doctorsAreLoading && query !== "add") ? (
+      {isLoading && query !== "add" ? (
         <LoadingSpinner />
       ) : (
         <Form {...form}>
@@ -131,7 +139,7 @@ const AppointmentForm = () => {
             <div className="flex gap-5 flex-col lg:gap-3 lg:flex-row">
               <FormField
                 control={form.control}
-                name="patient"
+                name="patientId"
                 render={({ field }) => (
                   <FormItem className="w-full">
                     <FormLabel>
@@ -174,7 +182,7 @@ const AppointmentForm = () => {
                               !field.value && "text-muted-foreground"
                             )}
                           >
-                            {field.value
+                            {field.value && doctors
                               ? doctors?.find(
                                   (doctor) => doctor._id === field.value
                                 )?.name
@@ -184,34 +192,39 @@ const AppointmentForm = () => {
                         </FormControl>
                       </PopoverTrigger>
 
-                      <PopoverContent className="w-[500px] p-0">
-                        <Command>
-                          <CommandInput placeholder="Search doctor..." />
-                          <CommandEmpty>Doctor not found.</CommandEmpty>
+                      {doctors && (
+                        <PopoverContent className="w-[500px] p-0">
+                          <Command>
+                            <CommandInput placeholder="Search doctor..." />
+                            <CommandEmpty>Doctor not found.</CommandEmpty>
 
-                          <CommandList>
-                            {doctors?.map((doctor, index) => (
-                              <CommandItem
-                                value={doctor.name}
-                                key={index}
-                                onSelect={() => {
-                                  form.setValue("doctor", doctor._id as string);
-                                }}
-                              >
-                                <Check
-                                  className={cn(
-                                    "mr-2 h-4 w-4",
-                                    doctor._id === field.value
-                                      ? "opacity-100"
-                                      : "opacity-0"
-                                  )}
-                                />
-                                {doctor.name}
-                              </CommandItem>
-                            ))}
-                          </CommandList>
-                        </Command>
-                      </PopoverContent>
+                            <CommandList>
+                              {doctors?.map((doctor, index) => (
+                                <CommandItem
+                                  value={doctor.name}
+                                  key={index}
+                                  onSelect={() => {
+                                    form.setValue(
+                                      "doctor",
+                                      doctor._id as string
+                                    );
+                                  }}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      doctor._id === field.value
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  {doctor.name}
+                                </CommandItem>
+                              ))}
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      )}
                     </Popover>
                   </FormItem>
                 )}
@@ -254,11 +267,9 @@ const AppointmentForm = () => {
                       <PopoverContent className="w-auto p-0" align="start">
                         <Calendar
                           mode="single"
-                          selected={field.value}
+                          selected={new Date(field.value)}
                           onSelect={field.onChange}
-                          disabled={(date: Date) =>
-                            date > new Date() || date < new Date("1900-01-01")
-                          }
+                          disabled={(date: Date) => date < new Date()}
                           initialFocus
                         />
                       </PopoverContent>
