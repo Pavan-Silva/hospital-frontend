@@ -40,11 +40,13 @@ import { appointmentFormSchema } from "@/features/appointments/FormSchema";
 import { Doctor } from "../doctors/Columns";
 import { Appointment } from "./Columns";
 import { useToast } from "@/hooks/useToast";
+import { useDialog } from "@/hooks/useDialog";
 
 const AppointmentForm = () => {
   const { query } = useParams();
   const location = useLocation();
   const toast = useToast();
+  const dialog = useDialog();
 
   const {
     data: editableAppointment,
@@ -101,7 +103,9 @@ const AppointmentForm = () => {
       date: data.date,
     };
 
-    mutate(appointment);
+    dialog.open(`${query === "add" ? "Create" : "Edit"} Appointment`, () => {
+      mutate(appointment);
+    });
   };
 
   const handleReset = () => {
@@ -278,7 +282,11 @@ const AppointmentForm = () => {
                 )}
               />
 
-              <Button>
+              <Button
+                type="button"
+                variant={"outline"}
+                className="mt-auto text-purple border-purple border-opacity-50 hover:bg-purple hover:bg-opacity-5 hover:text-purple"
+              >
                 <FaRegSave className="mr-2 size-4" />
                 Check Availability
               </Button>
@@ -290,7 +298,11 @@ const AppointmentForm = () => {
                   variant="outline"
                   type="button"
                   className="text-red-500 border-red-100"
-                  onClick={() => deleteAppointment()}
+                  onClick={() => {
+                    dialog.open("Delete Appointment", () => {
+                      deleteAppointment();
+                    });
+                  }}
                 >
                   <MdDeleteOutline className="mr-1 size-5" />
                   Delete
