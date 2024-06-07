@@ -45,14 +45,14 @@ const FormHeader = ({
 
             {path.map((item, index) =>
               path.length - 1 !== index ? (
-                <>
-                  <BreadcrumbItem key={index}>
+                <div key={index} className="flex items-center gap-2">
+                  <BreadcrumbItem>
                     <BreadcrumbLink href={`/${item}`} className="capitalize">
                       {item}
                     </BreadcrumbLink>
                   </BreadcrumbItem>
-                  <BreadcrumbSeparator key={item} />
-                </>
+                  <BreadcrumbSeparator />
+                </div>
               ) : (
                 <BreadcrumbItem key={index}>
                   <BreadcrumbPage className="capitalize">
