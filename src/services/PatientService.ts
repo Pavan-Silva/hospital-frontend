@@ -3,7 +3,7 @@ import { Patient } from "@/features/patients/Columns";
 const baseUrl = "http://localhost:3000/api/patients";
 
 const getAll = async () => {
-  const response = await fetch(baseUrl, { credentials: "same-origin" });
+  const response = await fetch(baseUrl, { credentials: "include" });
   const data = await response.json();
   return data;
 };

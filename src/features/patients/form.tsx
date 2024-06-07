@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,7 +29,6 @@ import ErrorBox from "@/components/ErrorBox";
 import PatientService from "@/services/PatientService";
 import { patientFormSchema } from "@/features/patients/FormSchema";
 import { Patient } from "./Columns";
-import { Doctor } from "../doctors/Columns";
 import { useDialog } from "@/hooks/useDialog";
 import { useToast } from "@/hooks/useToast";
 
@@ -38,6 +37,7 @@ const PatientForm = () => {
   const location = useLocation();
   const dialog = useDialog();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const {
     data: editablePatient,
@@ -51,21 +51,27 @@ const PatientForm = () => {
 
   const { mutate } = useMutation({
     mutationKey: ["patients"],
-    mutationFn: (data: Doctor) =>
+    mutationFn: (data: Patient) =>
       editablePatient?._id
         ? PatientService.update(editablePatient._id, data)
         : PatientService.create(data),
 
-    onSuccess: () => toast.success(),
     onError: () => toast.error(),
+    onSuccess: () => {
+      toast.success();
+      navigate("/patients");
+    },
   });
 
   const { mutate: deletePatient } = useMutation({
     mutationKey: ["patients"],
     mutationFn: () => PatientService.deleteById(editablePatient?._id as string),
 
-    onSuccess: () => toast.success(),
     onError: () => toast.error(),
+    onSuccess: () => {
+      toast.success();
+      navigate("/patients");
+    },
   });
 
   const form = useForm<z.infer<typeof patientFormSchema>>({
