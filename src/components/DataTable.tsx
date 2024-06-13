@@ -20,6 +20,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useSearch } from "@/hooks/useSearch";
 
 export function DataTable({
   data,
@@ -29,13 +30,15 @@ export function DataTable({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<any>[];
 }) {
+  const { query } = useSearch();
   const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [rowSelection, setRowSelection] = React.useState({});
+
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
     data,
@@ -55,6 +58,10 @@ export function DataTable({
       rowSelection,
     },
   });
+
+  React.useEffect(() => {
+    table.getColumn("name")?.setFilterValue(query);
+  }, [query, table]);
 
   return (
     <div className="w-full">
