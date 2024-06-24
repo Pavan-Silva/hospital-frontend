@@ -11,6 +11,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Link } from "react-router-dom";
 import { Doctor } from "../doctors/Columns";
+import { Patient } from "../patients/Columns";
 
 export type Appointment = {
   _id?: string;
@@ -18,6 +19,7 @@ export type Appointment = {
   patientId: string;
   date: string;
   doctor?: Doctor;
+  patient?: Patient;
 };
 
 export const columnsAppointment: ColumnDef<Appointment>[] = [
@@ -65,20 +67,21 @@ export const columnsAppointment: ColumnDef<Appointment>[] = [
   },
 
   {
-    accessorKey: "patientId",
+    accessorKey: "patient",
+    accessorFn: (row) => row.patient?.name,
     header: ({ column }) => {
       return (
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
-          PatientId
+          Patient
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       );
     },
     cell: ({ row }) => (
-      <div className="lowercase">{row.getValue("patientId")}</div>
+      <div className="capitalize">{row.getValue("patient")}</div>
     ),
   },
 
